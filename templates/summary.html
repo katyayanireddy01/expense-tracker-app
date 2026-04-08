@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="page-wrap fade-in">
+    <a href="/" class="back-btn">← Back</a>
+
+    <div class="card glass-card">
+        <h1>📊 Expense Summary</h1>
+
+        <form method="GET" class="grid-form">
+            <select name="month">
+                <option value="">All Months</option>
+                {% for m in range(1,13) %}
+                <option value="{{ '%02d' % m }}" {% if selected_month == '%02d' % m %}selected{% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <select name="year">
+                <option value="">All Years</option>
+                {% for y in range(2024, 2031) %}
+                <option value="{{ y }}" {% if selected_year == y|string %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="category">
+                <option value="">All Categories</option>
+                <option value="Food">Food</option>
+                <option value="Bills">Bills</option>
+                <option value="Travel">Travel</option>
+                <option value="Shopping">Shopping</option>
+            </select>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+
+        <div class="summary-total">
+            <h2>Total: ₹{{ total }}</h2>
+        </div>
+        <div class="card">
+        <h2>💰 Budget Status</h2>
+        <p><strong>Budget:</strong> ₹{{ budget_amount }}</p>
+        <p>
+        <strong>Status:</strong>
+        <span style="color: {{ budget_color }}; font-weight: bold;">
+            {{ budget_status }}
+        </span>
+         </p>
+        </div>
+
+        <div class="toggle-box">
+            <button onclick="toggleChart('pieBox')">Toggle Pie Chart</button>
+            <button onclick="toggleChart('barBox')">Toggle Monthly Chart</button>
+        </div>
+
+        <div id="pieBox" class="chart-box">
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <div id="barBox" class="chart-box" style="display:none;">
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <h2>🗓 Recent Daily Expense Totals</h2>
+        <div class="calendar-grid">
+            {% for item in calendar_data %}
+            <div class="calendar-card">
+                <p>{{ item.date }}</p>
+                <strong>₹{{ item.amount }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleChart(id){
+    let box = document.getElementById(id);
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+new Chart(document.getElementById('pieChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ labels|tojson }},
+        datasets: [{
+            data: {{ values|tojson }},
+            backgroundColor: ['#ff6b6b','#4ecdc4','#45b7d1','#f7b731','#a55eea']
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: { duration: 1800 }
+    }
+});
+
+new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ bar_labels|tojson }},
+        datasets: [{
+            label: 'Monthly Expenses',
+            data: {{ bar_values|tojson }},
+            backgroundColor: '#667eea'
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: { duration: 1800 }
+    }
+});
+</script>
+</body>
+</html>

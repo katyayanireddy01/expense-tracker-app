@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Add Expense</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+{% if success %}
+<div class="toast show">
+<i class="fas fa-check-circle"></i>
+Expense added successfully
+</div>
+{% endif %}
+
+<div class="app-container">
+
+<a href="/" class="back-btn">
+<i class="fas fa-arrow-left"></i> Back
+</a>
+
+<div class="card">
+
+<h2 class="title">Add Expense</h2>
+
+<form method="POST" class="expense-form">
+
+<div class="floating-group">
+<input type="text" name="name" required placeholder=" ">
+<label>Expense Name (e.g., Groceries, Electricity)</label>
+</div>
+
+<div class="floating-group">
+<input type="number" name="amount" required placeholder=" ">
+<label>Amount (₹)</label>
+</div>
+
+<label>Category</label>
+
+<select name="category" class="icon-select" required>
+<option value="">Select category</option>
+<option>🍔 Food</option>
+<option>🚕 Transport</option>
+<option>🛍 Shopping</option>
+<option>💡 Bills</option>
+<option>📚 Education</option>
+<option>💊 Health</option>
+<option>🎮 Entertainment</option>
+<option>📦 Other</option>
+</select>
+
+<label>
+<i class="fas fa-calendar-alt"></i>
+Date (DD/MM/YYYY)
+</label>
+
+<input type="date" name="date" required>
+
+<div class="quick-date">
+
+<button type="button" onclick="setToday()">Today</button>
+
+<button type="button" onclick="setYesterday()">Yesterday</button>
+
+</div>
+
+<button class="btn-primary" type="submit">
+
+<i class="fas fa-plus-circle"></i> Add Expense
+
+</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark");
+}
+
+function setToday(){
+document.querySelector('input[type="date"]').value=
+new Date().toISOString().split('T')[0];
+}
+
+function setYesterday(){
+let d=new Date();
+d.setDate(d.getDate()-1);
+document.querySelector('input[type="date"]').value=
+d.toISOString().split('T')[0];
+}
+
+setTimeout(()=>{
+const toast=document.querySelector(".toast");
+if(toast)toast.classList.remove("show");
+},3000);
+
+</script>
+
+</body>
+</html>

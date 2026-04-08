@@ -3,20 +3,14 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-
-# =========================
-# DATABASE PATH
-# =========================
-DB_FOLDER = "database"
-DB_NAME = os.path.join(DB_FOLDER, "expenses.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "expenses.db")
 
 
 # =========================
 # CREATE DATABASE
 # =========================
 def init_db():
-    os.makedirs(DB_FOLDER, exist_ok=True)
-
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
@@ -25,15 +19,8 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             amount REAL NOT NULL,
-            category TEXT NOT NULL,
-            date TEXT NOT NULL
-        )
-    """)
-
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS budget (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            amount REAL NOT NULL
+            category TEXT,
+            date TEXT
         )
     """)
 

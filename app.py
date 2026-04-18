@@ -4,7 +4,8 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.config['SECRECT KEY']=os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+application = app
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "expenses.db")
 
